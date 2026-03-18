@@ -1,0 +1,20 @@
+Paragraph A:
+            Selector: <p>
+            It inherits all properties from the <p> selector; 
+            color: gray, font-size: 1rem, Font-Family:Georgia, serif, line-height: 1.4 and padding 4px, 0;
+Paragraph B:
+            Selectors: <p>, .info
+            It inherits all the properties from '.info' class selector because it is more specific than <p>;
+            color, font-size, background, padding, border-left, and font-family
+Paragraph C:
+            Selectors <p>, #warning
+            It inherits the style from the '#warning' ID Selector;
+            color, font-size, font-style, text-transform, letter-spacing, border, padding, background, and font-family
+Paragraph D:
+            Selectors: <p>, .info, #warning
+            Firstly, it inherits the elements from a combination from '#warning.info', then falls back into the id selector and then the class selector and finally the element.
+            The color is inherited from '#warning.info', then the font-familiy is inerited from '#warning', thus the id selector binds stronger than the class selector or element, even if they also specify a font-familiy.
+
+h1:
+    Firstly, the external CSS is linked and loaded, then the browser reads the internal CSS and overwrites the color of the h1 from 'darkblue' to 'darkolivegreen'.
+    The rest of the parameters, except the color, remain unchanged because there was no second definition of them.

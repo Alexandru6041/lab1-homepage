@@ -1,0 +1,61 @@
+body {
+    background: #aea984;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family:Tahoma, sans-serif;
+}
+
+main {
+    text-align: center;
+}
+
+.personal-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    width: 320px;
+}
+
+.full-name {
+    color: #2d3436;
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.specializare {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+#profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid;
+}
+
+#email-link {
+    display: block;
+    color: #667eea;
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+
+#github-link {
+    display: block;
+    margin: auto;
+    font-weight: bold;
+    background: linear-gradient(to right, #5974eb 0%, #eae4ef 70%);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+    text-decoration: none;
+}

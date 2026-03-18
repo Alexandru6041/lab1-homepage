@@ -1,0 +1,48 @@
+#main-content section:nth-of-type(4) table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
+    font-family: Arial, sans-serif;
+    border: none;
+}
+
+#main-content section:nth-of-type(4) thead th {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 12px;
+}
+
+#main-content section:nth-of-type(4) tbody th {
+    background-color: #7b1fa2;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #9c27b0;
+}
+
+#main-content section:nth-of-type(4) tbody tr:nth-child(even) {
+    background-color: #edd8f0;
+}
+
+#main-content section:nth-of-type(4) td {
+    padding: 10px;
+    border-bottom: 1px solid #d6c2c2;
+    color: #333;
+}
+
+#main-content section:nth-of-type(4) tr:nth-child(1) td:nth-child(3) {
+    background-color: #d5ebd7;
+    color: #2d8b32;
+    font-weight: bold;
+}
+
+#main-content section:nth-of-type(4) tr:nth-child(2) td:nth-child(2) {
+    background-color: #ffebee;
+    color: #9f1f1f;
+    font-weight: bold;
+}
+
+.skills-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
