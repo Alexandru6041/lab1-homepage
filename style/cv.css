@@ -1,0 +1,133 @@
+body {
+    background: #aea984;
+    font-family: Tahoma, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.cv-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    width: 100%;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #2d3436;
+}
+
+.full-name {
+    color: #2d3436;
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.specializare {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+#email-link {
+    display: block;
+    color: #667eea;
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+
+#github-link, .project-title{
+    display: block;
+    margin: auto;
+    font-weight: bold;
+    background: linear-gradient(to right, #5974eb 0%, #eae4ef 70%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: none;
+}
+
+.section-title {
+    color: #2d3436;
+    border-bottom: 2px solid #aea984;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cv-section {
+    margin-bottom: 2.5rem;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-tag {
+    background: #aea984;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: #fdfdfd;
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.project-title {
+    margin: 0 0 0.8rem 0;
+    text-align:left;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.project-desc {
+    color:#555;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin:0;
+    margin-top:10px;
+}
+
+.featured-card {
+    background: #f0f4ff;
+    border: 2px solid #5974eb;
+    transform: translateY(-5px);
+}
