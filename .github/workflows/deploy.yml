@@ -1,8 +1,8 @@
-name: Deploy Final Structure
+name: Deploy-Lab-Homepage
 
 on:
   push:
-    branches: ["main"] 
+    branches: ["main", "master"]
 
 permissions:
   contents: read
@@ -13,24 +13,27 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Assemble Site
+      - name: Pregatire Deploy
         run: |
-          mkdir _site
-          cp -r html/* _site/
-          cp -r style _site/
-          cp -r assets _site/
+          mkdir public_deploy
+          
+          cp -r html/* public_deploy/
+          
+          cp -r style public_deploy/
+          cp -r assets public_deploy/
+          
+          touch public_deploy/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_site'
+          path: './public_deploy'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - name: Deploy
         uses: actions/deploy-pages@v4
