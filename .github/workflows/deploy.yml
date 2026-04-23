@@ -37,3 +37,12 @@ jobs:
 
       - name: Deploy
         uses: actions/deploy-pages@v4
+      
+      - name: Working Deploy
+        run: |
+          mkdir public_deploy
+          cp -r html/* public_deploy/
+          cp -r style public_deploy/
+          cp -r assets public_deploy/
+          cp -r javascript public_deploy/  # Added this line
+          touch public_deploy/.nojekyll
