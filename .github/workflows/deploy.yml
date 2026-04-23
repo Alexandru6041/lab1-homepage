@@ -40,9 +40,11 @@ jobs:
       
       - name: Working Deploy
         run: |
-          mkdir public_deploy
+          mkdir -p public_deploy
+          
           cp -r html/* public_deploy/
           cp -r style public_deploy/
           cp -r assets public_deploy/
-          cp -r javascript public_deploy/  # Added this line
+          cp -r javascript public_deploy/
+          
           touch public_deploy/.nojekyll
