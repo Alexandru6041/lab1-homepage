@@ -18,12 +18,16 @@ jobs:
 
       - name: Pregatire Deploy
         run: |
-          mkdir public_deploy
+          ls -R
+          
+          mkdir -p public_deploy
           
           cp -r html/* public_deploy/
           
           cp -r style public_deploy/
           cp -r assets public_deploy/
+          
+          cp -rv javascript public_deploy/
           
           touch public_deploy/.nojekyll
 
@@ -37,14 +41,3 @@ jobs:
 
       - name: Deploy
         uses: actions/deploy-pages@v4
-      
-      - name: Working Deploy
-        run: |
-          mkdir -p public_deploy
-          
-          cp -r html/* public_deploy/
-          cp -r style public_deploy/
-          cp -r assets public_deploy/
-          cp -r javascript public_deploy/
-          
-          touch public_deploy/.nojekyll
