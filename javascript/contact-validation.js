@@ -23,6 +23,7 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
         return;
     }
+
     const phone = document.getElementById("phone").value.trim();
     const phonePattern = /^\d{10}$/;
 
@@ -39,6 +40,7 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
         return;
     }
+
     const message = document.getElementById("message").value.trim();
 
     if (message === "") {
@@ -106,6 +108,7 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
         return;
     }
+
     const fileInput = document.getElementById("fileUpload");
 
     if (!fileInput.files || fileInput.files.length === 0) {
@@ -117,7 +120,7 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     const file = fileInput.files[0];
     const allowedExtensions = [".pdf", ".docx"];
     const fileExtension = "." + file.name.split(".").pop().toLowerCase();
-    const maxSizeBytes = 2 * 1024 * 1024;
+    const maxSizeBytes = 2 * 1024 * 1024; // 2 MB
 
     if (!allowedExtensions.includes(fileExtension)) {
         alert("Only .pdf or .docx files are allowed.");
@@ -137,11 +140,19 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
         return;
     }
+    e.preventDefault();
+
     const confirmed = confirm(
         "All fields are valid.\n\nAre you sure you want to submit the form?"
     );
 
-    if (!confirmed) {
-        e.preventDefault();
+    if (confirmed) {
+        // Show success feedback in the page
+        const form = document.getElementById("contactForm");
+        const successMsg = document.createElement("p");
+        successMsg.textContent = "✅ Your message has been sent successfully!";
+        successMsg.style.color = "green";
+        successMsg.style.fontWeight = "bold";
+        form.replaceWith(successMsg);
     }
 });
