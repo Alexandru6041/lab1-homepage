@@ -147,10 +147,9 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     );
 
     if (confirmed) {
-        // Show success feedback in the page
         const form = document.getElementById("contactForm");
         const successMsg = document.createElement("p");
-        successMsg.textContent = "✅ Your message has been sent successfully!";
+        successMsg.textContent = "Your message has been sent successfully!";
         successMsg.style.color = "green";
         successMsg.style.fontWeight = "bold";
         form.replaceWith(successMsg);
