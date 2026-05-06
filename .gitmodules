@@ -1,3 +1,6 @@
 [submodule "Homework1"]
 	path = Homework1
 	url = git@github.com:Alexandru6041/Web-Design-Homework1.git
+[submodule "Homework2"]
+	path = Homework2
+	url = git@github.com:CS-WD-UVT-2026/hw2-wd-ie-Alexandru6041.git

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Universities in Romania | Web Design 2025-2026</title>
+    <link rel="stylesheet" href="style/universities.css">
+</head>
+
+<body>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <main id="main-content">
+        <section>
+            <nav aria-label="Main navigation">
+                <ul>
+                    <li><a href="index.html">Home Page</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="card.html">Personal Information</a></li>
+                    <li><a href="specificity.html">Specificity Game</a></li>
+                    <li><a href="cv.html">Curriculum Vitae</a></li>
+                    <li><a href="chatbot.html">Chatbot (Lab 8)</a></li>
+                    <li><a href="universities.html" aria-current="page">Universities</a></li>
+                </ul>
+            </nav>
+
+            <header>
+                <h1>Universities in Romania</h1>
+            </header>
+        </section>
+
+        <div>
+            <label for="q">Filter (optional):</label>
+            <input id="q" placeholder="search by name…" />
+
+            <button id="exportCsv">Export CSV</button>
+
+            <div id="status" class="status"></div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Website</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Chelariu Alexandru Gabriel · Web Design 2025-2026 · Semester II</p>
+    </footer>
+
+    <script src="javascript/universities.js"></script>
+</body>
+
+</html>
