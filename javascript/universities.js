@@ -33,49 +33,46 @@ async function loadUniversities() {
         all = data;
         render(all);
         setStatus(`Loaded (${all.length} results).`);
-    } catch {
+    } 
+    catch {
         setStatus("Loading error. Please try again.");
     }
 }
 
 qInput.addEventListener("input", () => {
-    const q        = qInput.value.trim().toLowerCase();
-    const filtered = q
-        ? all.filter(u => (u.name || "").toLowerCase().includes(q))
-        : all;
+    const q = qInput.value.trim().toLowerCase();
+    const filtered = q ? all.filter(u => (u.name || "").toLowerCase().includes(q)) : all;
     render(filtered);
     setStatus(`Filtered: ${filtered.length} of ${all.length}.`);
 });
 
 
 function exportCSV(data) {
-    if (!data.length) return alert("No data to export.");
+    if(!data.length) 
+        return alert("No data to export.");
 
     const header = ["Name", "Country", "Website"];
-    const rows   = data.map(u => [
+    const rows = data.map(u => [
         u.name    || "",
         u.country || "",
-        (u.web_pages && u.web_pages[0]) || ""
-    ]);
+        (u.web_pages && u.web_pages[0]) || ""]);
 
     const csvContent = [header, ...rows]
         .map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(","))
         .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    a.href     = url;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
     a.download = "universities.csv";
     a.click();
     URL.revokeObjectURL(url);
 }
 
 btnExport.addEventListener("click", () => {
-    const q        = qInput.value.trim().toLowerCase();
-    const current  = q
-        ? all.filter(u => (u.name || "").toLowerCase().includes(q))
-        : all;
+    const q = qInput.value.trim().toLowerCase();
+    const current = q ? all.filter(u => (u.name || "").toLowerCase().includes(q)) : all;
     exportCSV(current);
 });
 
