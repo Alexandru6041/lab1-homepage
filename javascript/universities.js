@@ -13,7 +13,7 @@ function setStatus(text) {
 
 function render(data) {
     tbody.innerHTML = data.map(u => {
-        const site = u.web_pages?.[0] ? `<a href="${u.web_pages[0]}" target="_blank" rel="noopener noreferrer">${u.web_pages[0]}</a>` : "";
+        const site = u.web_pages?.[0] ? `<a href="${u.web_pages[0]}" target = "_blank" rel="noopener noreferrer">${u.web_pages[0]}</a>` : "";
         return `
         <tr>
             <td>${u.name    || ""}</td>
@@ -34,8 +34,9 @@ async function loadUniversities() {
         render(all);
         setStatus(`Loaded (${all.length} results).`);
     } 
-    catch {
-        setStatus("Loading error. Please try again.");
+    catch(err){
+        setStatus("Loading error. Please try again. Check console for details.");
+        console.log(err);
     }
 }
 
@@ -48,8 +49,10 @@ qInput.addEventListener("input", () => {
 
 
 function exportCSV(data) {
-    if(!data.length) 
+    if(!data.length) {
+        console.log("No data to export.");
         return alert("No data to export.");
+    }
 
     const header = ["Name", "Country", "Website"];
     const rows = data.map(u => [
