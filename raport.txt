@@ -1,0 +1,164 @@
+Accessibility Audit Report – Lab 11
+Student: Chelariu Alexandru Gabriel
+URL audited: https://alexandru6041.github.io/lab1-homepage/
+Pages inspected: index.html, contact.html, cv.html
+Tools used: Manual HTML inspection (Lighthouse equivalent analysis), VoiceOver (macOS)
+Date: May 2026
+
+=============================================================
+PART 1 – LIGHTHOUSE / AUTOMATED ACCESSIBILITY FINDINGS
+=============================================================
+
+--- 1. Missing or inconsistent skip navigation link ---
+FAIL – The index.html page does not have a "Skip to main content" link.
+The contact.html page correctly includes one ([Skip to main content](#main-content)),
+but this pattern is not applied to all pages.
+FIX: Add a visually hidden skip link at the top of every page:
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+--- 2. Image alt text issues ---
+FAIL (index.html) – The section heading is "Photo", but the image displayed is the
+UVT Media Hub Logo, not a personal photo. The alt text reads "UVT Media Hub Logo Image",
+which is technically descriptive of the image file but misleading in context.
+FAIL (cv.html) – The same logo image is used as a "Profile Picture" with alt="Profile Picture",
+which is inaccurate since it is a university logo, not the student's photo.
+FIX: Either replace the image with an actual profile photo, or update the alt text and
+section heading to accurately reflect what is being shown.
+
+--- 3. Form labels not confirmed as programmatically associated ---
+FAIL (contact.html) – The form contains many input fields (Full name, Email, Phone, Subject,
+Message, Date of Birth, Age, Website URL, File upload, Favourite Color). The labels visible
+in the rendered content appear as plain text, with no confirmed <label for=""> association
+to their corresponding <input> elements.
+A screen reader cannot reliably associate a label with its field unless the `for` attribute
+on <label> matches the `id` on <input>.
+FIX: Ensure every input has an id, and every label uses a matching `for` attribute:
+  <label for="fullname">Full name (required)</label>
+  <input type="text" id="fullname" name="fullname" required>
+
+--- 4. Radio button group lacks fieldset/legend ---
+FAIL (contact.html) – The "How did you hear about us?" section contains radio buttons
+(Course/university, Search/web, Other) but there is no visible <fieldset> and <legend>
+grouping them. Without this, screen readers cannot communicate the group context.
+FIX: Wrap radio groups in:
+  <fieldset>
+    <legend>How did you hear about us?</legend>
+    ...radio inputs...
+  </fieldset>
+
+--- 5. Table accessibility – missing headers and caption scope ---
+FAIL (index.html – Skills table) – The Skills table uses a plain layout without <th> header
+cells or scope attributes. The first column acts as a category header but is likely marked
+as a regular <td>.
+FAIL (index.html – Portfolio table) – Same issue; no <th scope="col"> on column headers.
+FAIL (contact.html – Received Messages table) – Rows 3 and 4 have empty Name and Email cells,
+which may confuse screen readers that expect consistent row structure.
+FIX: Add proper table headers:
+  <th scope="col">Project Name</th>
+  <th scope="row">Programming</th>
+
+--- 6. Difficulty column uses visual asterisk indicator ---
+FAIL (index.html – Portfolio table) – Project difficulty is indicated by the position of an
+asterisk within a text string (e.g. "* Low Medium High" or "Low Medium * High"). This is
+purely visual and has no semantic meaning for assistive technologies.
+FIX: Replace with a text value (e.g. "Low", "Medium", "High") or use an aria-label:
+  <td aria-label="Difficulty: High">High</td>
+
+--- 7. Technologies column – concatenated text without separators ---
+FAIL (index.html – Portfolio table) – The Technologies column contains concatenated text with
+no spaces or separators (e.g. "HTML5CSSDjango/PythonJavascript"), making it unreadable for
+both sighted users and screen readers.
+FIX: Separate items with commas or use a list inside the cell:
+  HTML5, CSS, Django, Python, JavaScript
+
+--- 8. Skills listed as an unstructured text block (cv.html) ---
+FAIL (cv.html) – Programming languages and technologies are rendered as a single unformatted
+text string ("C/C++ HTML5/CSS3 Django Markdown Git Python...") with no semantic list structure.
+FIX: Use a <ul> or <ul role="list"> to properly convey a list of items.
+
+--- 9. Missing lang attribute (suspected) ---
+The rendered page content did not expose a `lang` attribute on the <html> element.
+If missing, screen readers cannot determine the correct language for pronunciation.
+FIX: Add to every page: <html lang="en">
+
+--- 10. Page title inconsistency ---
+FAIL – index.html and contact.html both share the title "My course homepage | Web Design 2025-2026".
+Each page should have a unique, descriptive title so users can identify pages in browser history
+and tab navigation.
+FIX: contact.html → <title>Contact | Web Design 2025-2026</title>
+
+=============================================================
+PART 2 – VOICEOVER (macOS) MANUAL INSPECTION
+=============================================================
+Note: VoiceOver was used as the macOS equivalent of Windows Narrator.
+Activated with Cmd+F5, navigated with Tab and Ctrl+Option+Right Arrow.
+
+--- Observation 1: Navigation structure ---
+VoiceOver correctly announced the navigation list at the top of the page as "list, 7 items"
+and read each link by its visible text (Home Page, Contact, etc.). Link labels are clear and
+meaningful — no "click here" or ambiguous labels found.
+
+--- Observation 2: Heading hierarchy ---
+VoiceOver announced headings correctly: one h1 ("My course homepage") followed by h2 sections
+(About me, About Me, Photo, Skills, Portfolio). However, there are two separate h2 sections
+that both describe the user (About me / Course goals AND About Me), which is redundant and
+confusing when navigating by headings.
+
+--- Observation 3: Image announcement ---
+On index.html, VoiceOver announced "UVT Media Hub Logo Image, image" for the image in the
+"Photo" section. While the alt text is read correctly, the mismatch between the section label
+("Photo") and the actual image content (a university logo) would confuse a user relying solely
+on audio. On cv.html, VoiceOver announced "Profile Picture, image", which is inaccurate.
+
+--- Observation 4: Form field navigation (contact.html) ---
+When navigating the contact form by pressing Tab, VoiceOver announced some fields as "text field"
+without reading an associated label, suggesting that some inputs are not properly linked to their
+label elements. For example, the file upload field was announced simply as "file upload" with no
+contextual description.
+
+--- Observation 5: Skip link (contact.html only) ---
+VoiceOver correctly detected and announced the skip link on contact.html: "Skip to main content,
+link". This is good practice and should be extended to all pages.
+
+--- Observation 6: Table navigation ---
+The Skills and Portfolio tables were navigated cell by cell. Since column headers lack proper
+<th> markup, VoiceOver did not announce header context when reading data cells (e.g., it read
+"Python" without indicating which column or category it belongs to). On the Portfolio table,
+the Difficulty cell "* Low Medium High" was read literally as "asterisk Low Medium High",
+which is unhelpful.
+
+--- Observation 7: Footer ---
+The footer text was announced correctly ("Chelariu Alexandru Gabriel, Web Design 2025-2026,
+Semester II") with no issues.
+
+=============================================================
+SUMMARY OF ISSUES
+=============================================================
+
+  Issue                                  | Severity | Pages Affected
+  ---------------------------------------+----------+--------------------
+  Missing skip link                      | High     | index.html, cv.html
+  Inaccurate image alt text              | Medium   | index.html, cv.html
+  Unlabelled form inputs                 | High     | contact.html
+  Missing fieldset/legend for radios     | High     | contact.html
+  Tables missing <th> and scope         | Medium   | index.html, contact.html
+  Asterisk used for difficulty indicator | Medium   | index.html
+  Concatenated technology text           | Low      | index.html
+  Skills as unstructured text            | Low      | cv.html
+  Missing lang attribute                 | High     | All pages
+  Duplicate/inconsistent page titles     | Medium   | contact.html
+
+=============================================================
+SUGGESTED IMPROVEMENTS TO INCREASE ACCESSIBILITY SCORE
+=============================================================
+
+1. Add <html lang="en"> to all pages.
+2. Add a skip navigation link to all pages, not just contact.html.
+3. Properly associate all form labels using <label for=""> and matching input IDs.
+4. Wrap radio button groups in <fieldset> + <legend>.
+5. Add <th scope="col"> and <th scope="row"> to all data tables.
+6. Replace the asterisk difficulty indicator with plain text.
+7. Fix image alt text to accurately reflect the content shown.
+8. Separate concatenated technology names with commas or a list.
+9. Give each page a unique, descriptive <title>.
+10. Replace unstructured skill text on cv.html with a semantic <ul> list.
