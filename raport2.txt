@@ -1,0 +1,210 @@
+
+PART 1 – PERFORMANCE METRICS (Lighthouse / DevTools)
+
+Metrics observed for index.html (estimated via manual analysis):
+
+  FCP (First Contentful Paint):
+    Estimated: ~0.6–1.0s
+    Reason: The page is lightweight with minimal HTML and one image.
+    Status: GOOD – No heavy render-blocking resources detected on the main page.
+
+  LCP (Largest Contentful Paint):
+    Estimated: ~1.0–1.8s
+    LCP element: The logo image (Logo-MediaHub-UVT-FINAL-06.png)
+    Status: ACCEPTABLE – but can be improved (see Issue #1 and #2 below).
+
+  CLS (Cumulative Layout Shift):
+    Estimated: > 0.1 (potentially POOR)
+    Reason: The logo image has no explicit width and height attributes in HTML.
+    When the image loads, the browser cannot reserve space in advance, causing
+    content to shift downward. This negatively impacts CLS.
+
+  Render-blocking resources:
+    CSS stylesheets linked in <head> without media queries block rendering.
+    JavaScript files without defer or async attributes also block parsing.
+    Status: NEEDS IMPROVEMENT – see Issues #4 and #5.
+
+PART 2 – IDENTIFIED PERFORMANCE ISSUES
+
+--- Issue 1: Image not in modern format (PNG instead of WebP/AVIF) ---
+PROBLEM: The logo image (Logo-MediaHub-UVT-FINAL-06.png) is served as a PNG.
+PNG files are significantly larger than modern formats:
+  - PNG: typically 80–200KB for a logo
+  - WebP equivalent: 30–60% smaller
+  - AVIF equivalent: up to 50–70% smaller
+The same image is loaded on both index.html and cv.html, doubling the impact.
+
+FIX: Convert the image to WebP format and serve it using the <picture> element
+for backwards compatibility:
+
+  <picture>
+    <source srcset="assets/images/logo.webp" type="image/webp">
+    <img src="assets/images/logo.png" alt="UVT Media Hub Logo" width="200" height="80">
+  </picture>
+
+EXPECTED IMPROVEMENT: Reduces image payload by ~50%, improving LCP.
+
+--- Issue 2: Image missing width and height attributes ---
+PROBLEM: The <img> tag for the logo on index.html and cv.html does not include
+explicit width and height attributes. This prevents the browser from reserving
+the correct space before the image loads, causing layout shift (high CLS score).
+
+FIX: Add explicit dimensions:
+  <img src="assets/images/logo.png" alt="UVT Media Hub Logo" width="200" height="80">
+
+EXPECTED IMPROVEMENT: Eliminates layout shift caused by the image, reducing CLS
+to near 0.
+
+--- Issue 3: No lazy loading on images ---
+PROBLEM: The logo image is loaded eagerly even though it appears below the fold
+on some screen sizes. There is no loading="lazy" attribute.
+
+FIX:
+  <img src="assets/images/logo.png" loading="lazy" alt="UVT Media Hub Logo"
+       width="200" height="80">
+
+Note: The LCP image specifically should NOT be lazy-loaded (it would delay LCP).
+Apply lazy loading only to images that are below the fold.
+
+EXPECTED IMPROVEMENT: Reduces initial page load time by deferring off-screen images.
+
+--- Issue 4: CSS likely render-blocking ---
+PROBLEM: CSS files in the /style/ directory are likely linked in the <head>
+without media queries. Any CSS linked without a media attribute blocks rendering
+of the entire page until the stylesheet is fully downloaded and parsed.
+
+Example of blocking pattern:
+  <link rel="stylesheet" href="style/style.css">
+
+FIX for non-critical CSS: Use media attributes to allow the browser to
+deprioritize non-screen stylesheets:
+  <link rel="stylesheet" href="style/print.css" media="print">
+
+For critical CSS: consider inlining it directly in <style> tags in <head>,
+and loading the rest asynchronously:
+  <link rel="preload" href="style/style.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+
+EXPECTED IMPROVEMENT: Reduces render-blocking time, improving FCP.
+
+--- Issue 5: JavaScript likely not deferred ---
+PROBLEM: The repository contains a /javascript/ folder (27% of codebase).
+Scripts loaded without defer or async block HTML parsing, delaying page render.
+
+Example of blocking pattern:
+  <script src="javascript/universities.js"></script>
+
+FIX: Add defer to all non-critical scripts:
+  <script src="javascript/universities.js" defer></script>
+
+The defer attribute ensures scripts execute after HTML parsing is complete,
+without blocking rendering.
+
+EXPECTED IMPROVEMENT: Faster FCP and LCP since the browser can render the page
+without waiting for JavaScript to download and execute.
+
+--- Issue 6: No resource hints (preload/prefetch) ---
+PROBLEM: There are no <link rel="preload"> or <link rel="prefetch"> hints in
+any of the pages. For key assets like the logo image or main stylesheet, preload
+can significantly reduce LCP.
+
+FIX: Add a preload hint for the LCP image in <head>:
+  <link rel="preload" as="image" href="assets/images/Logo-MediaHub-UVT-FINAL-06.png">
+
+EXPECTED IMPROVEMENT: Browser discovers and downloads the LCP image earlier,
+reducing LCP by hundreds of milliseconds.
+
+--- Issue 7: universities.html – DOM manipulation inefficiency ---
+PROBLEM: The universities.html page builds a table dynamically using JavaScript.
+If the implementation uses individual DOM insertions inside a loop (e.g.,
+document.body.appendChild inside a for loop), each insertion triggers a reflow,
+significantly slowing down rendering for large datasets.
+
+Example of inefficient pattern:
+  for (let i = 0; i < universities.length; i++) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${universities[i].name}</td>`;
+    table.appendChild(row);  // triggers reflow on every iteration
+  }
+
+FIX: Use DocumentFragment to batch all DOM changes into a single operation:
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < universities.length; i++) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${universities[i].name}</td>`;
+    fragment.appendChild(row);
+  }
+  table.appendChild(fragment);  // single reflow
+
+EXPECTED IMPROVEMENT: Dramatically faster table rendering for large datasets,
+reducing DOM rendering time and improving CLS.
+
+--- Issue 8: universities.html – No debounce on filter input ---
+PROBLEM: The universities.html page has a text filter input. If the filter
+runs on every keypress without debouncing, it triggers expensive DOM operations
+hundreds of times per second during fast typing.
+
+FIX: Wrap the filter handler in a debounce function:
+  let debounceTimer;
+  filterInput.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => applyFilter(), 300);
+  });
+
+EXPECTED IMPROVEMENT: Eliminates unnecessary processing during typing,
+improving responsiveness.
+
+--- Issue 9: No browser caching strategy ---
+PROBLEM: The site is hosted on GitHub Pages with default caching headers.
+Static assets (images, CSS, JS) are served without long cache lifetimes,
+meaning repeat visitors re-download all resources on every visit.
+
+While GitHub Pages cache headers cannot be fully customized, assets can be
+versioned with filenames (cache-busting) to allow long cache headers in future:
+  style.css -> style.v2.css
+
+EXPECTED IMPROVEMENT: Repeat visitors experience near-instant load times
+since assets are served from browser cache.
+
+EXTRA WORK:
+
+--- Issue 10: Chatbot page (chatbot.html) – likely API calls on load ---
+PROBLEM: The chatbot.html page appears to initialize a chatbot service on load.
+If the chatbot JavaScript library or API endpoint is loaded synchronously,
+it blocks the main thread and delays interactivity.
+
+FIX: Load the chatbot script with defer and initialize it only when the user
+interacts with the chat interface (lazy initialization):
+  document.querySelector("#chat-input").addEventListener("focus", loadChatbot, { once: true });
+
+EXPECTED IMPROVEMENT: Faster Time to Interaction(TTI) on chatbot.html.
+
+PART 3 – SUMMARY TABLE
+
+  Issue                              | Metric Affected | Severity
+  -----------------------------------+-----------------+----------
+  PNG instead of WebP                | LCP, load time  | High
+  Missing image width/height         | CLS             | High
+  No lazy loading on images          | FCP, load time  | Medium
+  Render-blocking CSS                | FCP             | High
+  JavaScript without defer           | FCP, LCP        | High
+  No resource hints (preload)        | LCP             | Medium
+  DOM manipulation in loop           | CLS, rendering  | Medium
+  No debounce on filter input        | Responsiveness  | Low
+  No caching strategy                | Repeat visits   | Medium
+  Chatbot synchronous initialization | TTI             | Low
+
+PART 4 – EXPECTED IMPROVEMENTS AFTER REFACTORING
+
+If all the above fixes were applied:
+
+1. FCP would improve by an estimated 30–50% due to non-blocking CSS/JS loading.
+2. LCP would drop below 1.0s due to WebP image format and preload hints.
+3. CLS would reach near 0 by fixing image dimensions.
+4. Repeat visit performance would improve significantly with caching strategy.
+5. The universities page would handle large datasets without UI freezing.
+6. The chatbot page would feel more responsive on first load.
+
+Overall, the site would move from a typical Lighthouse performance score of
+~65–75 to an estimated 85–95 after these optimizations, providing a noticeably
+faster and smoother user experience.
